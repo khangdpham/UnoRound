@@ -5,7 +5,6 @@ class Hand(object):
 			[3,3,3,3,3],
 			[4,4,4,4,4],
 			[5,5,5,5,5],
-			[1,2,3,4,5], 
 			[1,1,1,1,2], 
 			[1,1,1,1,3],
 			[1,1,1,1,4],
@@ -76,6 +75,7 @@ class Hand(object):
 			[2,3,5,5,5],
 			[2,4,5,5,5],
 			[3,4,5,5,5],
+			[1,2,3,4,5], 
 			[1,1,2,2,3], 
 			[1,1,2,2,4],
 			[1,1,2,2,5],
@@ -126,5 +126,6 @@ class Hand(object):
 			[1,2,4,5,5],
 			[1,3,4,5,5],
 			[2,3,4,5,5]]
-	def getPowerHand(x):
-		return hands[12]
+	@staticmethod
+	def getPowerHand(self, h):
+		return self.hands.index(h)

@@ -2,10 +2,17 @@ from random import shuffle
 
 
 class Robot(object):
-	MAX_HAND = 5
 	def __init__(self, n):
 		self.name = n	
-		self.hand = [1,2,3,4,5]
+		self.hand = []
+		self.win  = 0
+		self.tie  = 0
+	def winGame(self):
+		self.win += 1
+	def tieGame(self):
+		self.tie += 1
+	def dealCard(self,c):
+		self.hand.append(c)
 	def getName(self):
 		return self.name
 	def getHand(self):
@@ -18,7 +25,9 @@ class Robot(object):
 		self.hand.append(card)
 		shuffle(self.hand)		
 	def shuffleHand(self):
-		shuffle(self.hand)			
+		shuffle(self.hand)		
+	def resetHand(self):
+		self.hand=[]
 
 
 		
