@@ -2,24 +2,33 @@ from random import shuffle
 from Hand import Hand
 
 class Robot(object):
+	GAME_POINT=4
 	def __init__(self, n,l):
 		self.points= 0
 		self.name = n	
+		self.house = False
 		self.hand = []
 		self.win  = 0
 		self.tie  = 0
+		self.lose = 0
 		self.level = l
 		self.lastGame= 0
 	def __str__(self):
 		return self.name
 	def __repr__(self):
 		return self.__str__()
-	def addPoint(self,p):
-		self.points+= p
+	def setHouse(self,h):
+		self.house = h
+	def notWin(self,p):
+		self.points+=p
 	def winGame(self):
 		self.win += 1
+		self.points+=Robot.GAME_POINT
 	def tieGame(self):
 		self.tie += 1
+		self.points+=Robot.GAME_POINT-1
+	def loseGame(self):
+		self.lose += 1
 	def dealCard(self,c):
 		self.hand.append(c)
 	def getName(self):
@@ -62,15 +71,23 @@ class Robot(object):
 		if Hand.getPowerHand(Hand,sorted(self.hand)) < 80:
 			return True
 	def Strategy_2(self):
+		if self.lastGame == 0:
+			self.lastGame = 75
 		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 	def Strategy_3(self):
+		if self.lastGame == 0:
+			self.lastGame = 75
 		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 	def Strategy_4(self):
+		if self.lastGame == 0:
+			self.lastGame = 75
 		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 	def Strategy_5(self):
+		if self.lastGame == 0:
+			self.lastGame = 75
 		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 			

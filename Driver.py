@@ -6,16 +6,17 @@ import time
 import datetime
 from operator import itemgetter
 
-ROUND = 1000
+ROUND = 1
 #ROUND = 1000
 a1 = Robot("player1",1)
 a2 = Robot("player2",2)
 a3 = Robot("player3",3)
 a4 = Robot("player4",4)
 a5 = Robot("player5",5)
+FLIPPER= None
 POOL=[a1,a2,a3,a4,a5]
 DECK=[1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5]
-result=[]
+R_RESULT=[]
 DEBUG_SHUFFLE= True
 def dealCards():
 	newDeck =list(DECK)
@@ -45,62 +46,67 @@ def showAllHands():
 		print("#{} hand {}".format(b.getName(),b.getHand()))
 		#print("{} : {} - {}".format(b.getName(),b.getHand(),Hand.getPowerHand(Hand,b.getHand())))
 def newRound():
-	del result[:]
+	del R_RESULT[:]
 	for b in POOL:
 		b.resetHand()
 def printSummary():
 	for b in POOL:
-		print("{} wins: {} ties: {} points:{}".format(b.getName(),b.win,b.tie,b.points))
+		print("{} wins: {} ties: {} loses:{} points:{}".format(b.getName(),b.win,b.tie,b.lose,b.points))
 
 def calculateRound():
 	#### TODO : Calculate Winning points and Tie
 	###############################################################
-	global result
+	global R_RESULT,FLIPPER
+	print("Flipper is {}".format(FLIPPER.getName()))
 	for b in POOL:
-		result.append({'bot':b,'hand':Hand.getPowerHand(Hand,b.getHand())})
-	result= sorted(result,key=lambda k:k['hand'])
+		R_RESULT.append({'bot':b,'hand':Hand.getPowerHand(Hand,b.getHand())})
+	R_RESULT= sorted(R_RESULT,key=lambda k:k['hand'])
+	print(R_RESULT)
 	for b in POOL:
-		b.setLastGameWin(result[0]['hand'])
-	points=4
-	i = 0
-	skip = False
-	for i in range(len(result)-1):
-		if skip:
-			skip = False
-			continue
-		if i == 0:
-			if result[i]['hand'] == result[i+1]['hand']:	
-				result[i]['bot'].winGame()
-				result[i+1]['bot'].winGame()
-				result[i]['bot'].tieGame()
-				result[i+1]['bot'].tieGame()
-				result[i]['bot'].addPoint(points)
-				result[i+1]['bot'].addPoint(points)
-				skip =True
-			else:
-				result[i]['bot'].winGame()
-				result[i]['bot'].addPoint(points)
-		else:
-			if result[i]['hand'] == result[i+1]['hand']:	
-				result[i]['bot'].tieGame()
-				result[i+1]['bot'].tieGame()
-				result[i]['bot'].addPoint(points)
-				result[i+1]['bot'].addPoint(points)
-				skip =True
-			else:
-				result[i]['bot'].addPoint(points)
-		points-=1
+		b.setLastGameWin(R_RESULT[0]['hand'])
+	
+	###### This happends when all players have [1,2,3,4,5] hand
+	if R_RESULT[0]['hand'] == R_RESULT[1]['hand'] and \
+	   R_RESULT[1]['hand'] == R_RESULT[2]['hand'] :
+		for b in POOL:
+			b.tieGame()
+	######################################################################
+	
 		
-			
-
-
+	
 	return
+	for x, y in zip(R_RESULT,R_RESULT[1:]):
 
-	for b in POOL:
-		if Hand.getPowerHand(Hand,b.getHand()) == min(result):
-			print("#{} wins {}".format(b.getName(),min(result)))
-			b.winGame()
+		x_ind = R_RESULT.index(x)
+		y_ind = R_RESULT.index(y)
+
+		if x['bot'] == FLIPPER:
+
+			if x_ind == 0 and x['hand']!=y['hand']:
+				print("Here")
+				x['bot'].winGame()
+				x['bot'].addPoints()
+				
+			if x_ind == 0 and x['hand']==y['hand']:
+				print("Or Here")
+				x['bot'].tieGame()
+				y['bot'].tieGame()
+			if x_ind > 1:
+				print("Maybe Here")
+				x['bot'].loseGame()
+				
+		else:
+			if x_ind == 0 and x['hand']!=y['hand']:
+				x['bot'].winGame()
+			if x_ind == 0 and x['hand']==y['hand']:
+				x['bot'].tieGame()
+				y['bot'].tieGame()			
+			if x_ind == (len(R_RESULT)-1):
+				print("Loser")
+				x['bot'].loseGame()
+	
 def main():
+	global FLIPPER
 	round=1
 	for x in range(ROUND):
 		print("\n#Game Round {}".format(round))
@@ -115,7 +121,7 @@ def main():
 		turn=0
 		#############################################################
 		##### FLOP COUNT ############################################
-		flop= False
+		flip= False
 
 		#############################################################
 		while True:
@@ -124,24 +130,33 @@ def main():
 			withdrawCards()
 			for b in POOL:
 				if b.StrategyThinking() and turn > 5:
+					flip = True
+					FLIPPER = b
 					print("#{} flips".format(b.getName()))
-					flop = True
-			if flop : break
+			if flip : break
 		#############################################################
 		#############################################################
-		#a1.setNewHand([1,2,2,3,4])			
-		#a2.setNewHand([1,2,2,3,4])			
-		#a3.setNewHand([1,1,1,5,5])			
-		#a4.setNewHand([2,3,3,4,4])			
-		#a5.setNewHand([3,4,5,5,5])			
-
+		'''
+		a1.setNewHand([1,2,2,3,4])			
+		a2.setNewHand([1,2,2,3,4])			
+		a3.setNewHand([1,1,1,5,5])			
+		a4.setNewHand([2,3,3,4,4])			
+		a5.setNewHand([3,4,5,5,5])			
+		'''
+		'''
+		a1.setNewHand([2,3,4,5,5])			
+		a2.setNewHand([1,1,1,2,2])			
+		a3.setNewHand([2,3,4,5,5])			
+		a4.setNewHand([3,3,3,4,4])			
+		a5.setNewHand([1,1,2,4,5])		
+		'''
 		
-		#a1.setNewHand([1,1,2,2,4])			
-		#a2.setNewHand([1,1,2,2,4])			
-		#a3.setNewHand([1,2,3,5,5])			
-		#a4.setNewHand([3,3,4,5,5])			
-		#a5.setNewHand([3,3,4,4,5])			
-
+		a1.setNewHand([1,1,2,2,4])			
+		a2.setNewHand([1,1,2,2,4])			
+		a3.setNewHand([1,2,3,5,5])			
+		a4.setNewHand([3,3,4,5,5])			
+		a5.setNewHand([3,3,4,4,5])			
+		
 
 		#############################################################
 		#############################################################
