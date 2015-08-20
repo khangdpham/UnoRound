@@ -3,11 +3,19 @@ from Hand import Hand
 
 class Robot(object):
 	def __init__(self, n,l):
+		self.points= 0
 		self.name = n	
 		self.hand = []
 		self.win  = 0
 		self.tie  = 0
 		self.level = l
+		self.lastGame= 0
+	def __str__(self):
+		return self.name
+	def __repr__(self):
+		return self.__str__()
+	def addPoint(self,p):
+		self.points+= p
 	def winGame(self):
 		self.win += 1
 	def tieGame(self):
@@ -29,6 +37,8 @@ class Robot(object):
 		shuffle(self.hand)		
 	def resetHand(self):
 		self.hand=[]
+	def setLastGameWin(self,l):
+		self.lastGame = l
 	def StrategyThinking(self):
 		if self.level == 1:
 			if self.Strategy_1():
@@ -49,18 +59,18 @@ class Robot(object):
 				return  True
 		return False
 	def Strategy_1(self):
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < 75:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < 80:
 			return True
 	def Strategy_2(self):
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < 65:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 	def Strategy_3(self):
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < 55:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 	def Strategy_4(self):
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < 45:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 	def Strategy_5(self):
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < 40:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
 			return True
 			
