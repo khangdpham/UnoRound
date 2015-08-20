@@ -5,11 +5,13 @@ from random import shuffle
 import time
 import datetime
 
-a1 = Robot("player1")
-a2 = Robot("player2")
-a3 = Robot("player3")
-a4 = Robot("player4")
-a5 = Robot("player5")
+
+ROUND = 1000
+a1 = Robot("player1",1)
+a2 = Robot("player2",2)
+a3 = Robot("player3",3)
+a4 = Robot("player4",4)
+a5 = Robot("player5",5)
 POOL=[a1,a2,a3,a4,a5]
 DECK=[1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5]
 result=[]
@@ -55,15 +57,9 @@ def calculateRound():
 		if Hand.getPowerHand(Hand,b.getHand()) == min(result):
 			print("#{} wins {}".format(b.getName(),min(result)))
 			b.winGame()
-def StrategyThinking(bot):
-	if Hand.getPowerHand(Hand,bot.getHand()) < 40:
-		return True
-	else:
-		return False
-	
 def main():
 	round=1
-	for x in range(2):
+	for x in range(ROUND):
 		print("\n#Game Round {}".format(round))
 		newRound()
 		#showAllHands()
@@ -81,18 +77,14 @@ def main():
 
 		#############################################################
 		while True:
-			if turn > 5 and flop is True:
-				break	
+			print("\n#Game Turn {}".format(turn))				
 			turn+=1
-			print("\n#Game Turn {}".format(turn))					
-			#time.sleep(5)
 			withdrawCards()
-			if turn < 5:
-				continue
 			for b in POOL:
-				if StrategyThinking(b):
-					print("{} decides to flip".format(b.getName()))
+				if b.StrategyThinking() and turn > 5:
+					print("#{} flips".format(b.getName()))
 					flop = True
+			if flop : break
 		showAllHands()
 		print("")
 		calculateRound()
