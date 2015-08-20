@@ -13,7 +13,7 @@ a5 = Robot("player5")
 POOL=[a1,a2,a3,a4,a5]
 DECK=[1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5,1,2,3,4,5]
 result=[]
-DEBUG_SHUFFLE=False
+DEBUG_SHUFFLE= True
 def dealCards():
 	newDeck =list(DECK)
 	if DEBUG_SHUFFLE : shuffle(newDeck)
@@ -55,6 +55,11 @@ def calculateRound():
 		if Hand.getPowerHand(Hand,b.getHand()) == min(result):
 			print("#{} wins {}".format(b.getName(),min(result)))
 			b.winGame()
+def StrategyThinking(bot):
+	if Hand.getPowerHand(Hand,bot.getHand()) < 40:
+		return True
+	else:
+		return False
 	
 def main():
 	round=1
@@ -70,12 +75,26 @@ def main():
 		print("\n#Game Flop".format(round))		
 		randint(0,100)
 		turn=0
-		for x in range(5):
+		#############################################################
+		##### FLOP COUNT ############################################
+		flop= False
+
+		#############################################################
+		while True:
+			if turn > 5 and flop is True:
+				break	
 			turn+=1
 			print("\n#Game Turn {}".format(turn))					
 			#time.sleep(5)
 			withdrawCards()
+			if turn < 5:
+				continue
+			for b in POOL:
+				if StrategyThinking(b):
+					print("{} decides to flip".format(b.getName()))
+					flop = True
 		showAllHands()
+		print("")
 		calculateRound()
 		round+=1
 		#time.sleep(2)
