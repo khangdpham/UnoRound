@@ -6,7 +6,7 @@ import time
 import datetime
 from operator import itemgetter
 
-ROUND = 1
+ROUND = 1000
 #ROUND = 1000
 a1 = Robot("player1",1)
 a2 = Robot("player2",2)
@@ -43,7 +43,7 @@ def withdrawCards():
 	print("#{} gets {}".format(POOL[len(POOL)-1].getName(),card))
 def showAllHands():
 	for b in POOL:
-		print("#{} hand {}".format(b.getName(),b.getHand()))
+		print("#{} hand {} {}".format(b.getName(),b.getHand(),Hand.getPowerHand(Hand,b.getHand())))
 		#print("{} : {} - {}".format(b.getName(),b.getHand(),Hand.getPowerHand(Hand,b.getHand())))
 def newRound():
 	del R_RESULT[:]
@@ -57,53 +57,55 @@ def calculateRound():
 	#### TODO : Calculate Winning points and Tie
 	###############################################################
 	global R_RESULT,FLIPPER
-	print("Flipper is {}".format(FLIPPER.getName()))
 	for b in POOL:
 		R_RESULT.append({'bot':b,'hand':Hand.getPowerHand(Hand,b.getHand())})
 	R_RESULT= sorted(R_RESULT,key=lambda k:k['hand'])
-	print(R_RESULT)
+	#print(R_RESULT)
 	for b in POOL:
 		b.setLastGameWin(R_RESULT[0]['hand'])
 	
-	###### This happends when all players have [1,2,3,4,5] hand
-	if R_RESULT[0]['hand'] == R_RESULT[1]['hand'] and \
-	   R_RESULT[1]['hand'] == R_RESULT[2]['hand'] :
+	###### This happens when all players have [1,2,3,4,5] hand
+	uHand = [1,2,3,4,5]
+	count = 0
+	for b in R_RESULT:
+		if b['hand'] == uHand:
+			count+=1
+	if count == 5:
 		for b in POOL:
 			b.tieGame()
+		return
+	if count == 3:
+		for i in range(2):
+			R_RESULT[i]['bot'].winGame()
+		if R_RESULT[3]['bot'] == FLIPPER:
+			R_RESULT[3]['bot'].loseGame()
+			R_RESULT[4]['bot'].notWin()
+		if R_RESULT[4]['bot'] == FLIPPER:
+			R_RESULT[3]['bot'].notWin()
+			R_RESULT[4]['bot'].loseGame()
+		return
 	######################################################################
-	
-		
-	
-	return
-	for x, y in zip(R_RESULT,R_RESULT[1:]):
-
-		x_ind = R_RESULT.index(x)
-		y_ind = R_RESULT.index(y)
-
+	f_idx = 99
+	for x in R_RESULT:
 		if x['bot'] == FLIPPER:
+			f_idx = R_RESULT.index(x)
 
-			if x_ind == 0 and x['hand']!=y['hand']:
-				print("Here")
-				x['bot'].winGame()
-				x['bot'].addPoints()
-				
-			if x_ind == 0 and x['hand']==y['hand']:
-				print("Or Here")
-				x['bot'].tieGame()
-				y['bot'].tieGame()
-			if x_ind > 1:
-				print("Maybe Here")
-				x['bot'].loseGame()
-				
-		else:
-			if x_ind == 0 and x['hand']!=y['hand']:
-				x['bot'].winGame()
-			if x_ind == 0 and x['hand']==y['hand']:
-				x['bot'].tieGame()
-				y['bot'].tieGame()			
-			if x_ind == (len(R_RESULT)-1):
-				print("Loser")
-				x['bot'].loseGame()
+	if R_RESULT[0]['hand'] == R_RESULT[1]['hand']:
+		if R_RESULT[0]['bot'] != FLIPPER and R_RESULT[1]['bot'] != FLIPPER:
+			R_RESULT.append(R_RESULT.pop(f_idx))
+		R_RESULT[0]['bot'].winGame()
+		R_RESULT[1]['bot'].winGame()
+		R_RESULT[2]['bot'].notWin()
+		R_RESULT[3]['bot'].notWin()	
+		R_RESULT[4]['bot'].loseGame()
+	else:
+		if R_RESULT[0]['bot'] != FLIPPER:
+			R_RESULT.append(R_RESULT.pop(f_idx))
+		R_RESULT[0]['bot'].winGame()
+		R_RESULT[1]['bot'].notWin()
+		R_RESULT[2]['bot'].notWin()
+		R_RESULT[3]['bot'].notWin()	
+		R_RESULT[4]['bot'].loseGame()		
 	
 def main():
 	global FLIPPER
@@ -133,6 +135,7 @@ def main():
 					flip = True
 					FLIPPER = b
 					print("#{} flips".format(b.getName()))
+					break
 			if flip : break
 		#############################################################
 		#############################################################
@@ -150,14 +153,14 @@ def main():
 		a4.setNewHand([3,3,3,4,4])			
 		a5.setNewHand([1,1,2,4,5])		
 		'''
-		
+		'''
 		a1.setNewHand([1,1,2,2,4])			
 		a2.setNewHand([1,1,2,2,4])			
 		a3.setNewHand([1,2,3,5,5])			
 		a4.setNewHand([3,3,4,5,5])			
 		a5.setNewHand([3,3,4,4,5])			
 		
-
+		'''
 		#############################################################
 		#############################################################
 		showAllHands()
