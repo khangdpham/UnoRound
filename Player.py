@@ -1,7 +1,10 @@
 from random import shuffle
+from termios import tcflush , TCIFLUSH
 from Hand import Hand
 from random import randint
 import numbers
+import time,sys
+
 
 class Player(object):
 	WIN_POINT=4
@@ -49,15 +52,21 @@ class Player(object):
 		shuffle(self.hand)		
 	def resetHand(self):
 		self.hand=[]
-	def processInput(self,str,turn):
+	def processInput(self,str):
+		tcflush(sys.stdin,TCIFLUSH)
+		
 		var_i = raw_input(str)
 		if str == "#Game Drawcard":
-			if (int(var_i) <=5 or int(var_i) >= 1):
-				c = int(var_i)-1
-			else:
-				c = randint(0,4)
-			return int(c)
+			try:
+				if (int(var_i) <=5 or int(var_i) >= 1):
+					c = int(var_i)-1
+				else:
+					c = randint(0,4)
+				return int(c)
+			except: return randint(0,4)
 		if str == "#Game Action":
-			return int(var_i)
-
+			try:
+				return int(var_i)
+			except:
+				return 0
 

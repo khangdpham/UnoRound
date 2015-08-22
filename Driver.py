@@ -147,9 +147,11 @@ def main():
 			print("\n#Game Turn {}".format(turn))				
 			turn+=1
 			withdrawCards(turn)
+			showAllHands()
+			raw_input()
 			for b in POOL:
 				if isinstance(b,Player):
-					action =processInput("#Game Action")
+					action=b.processInput("#Game Action")
 					if action == 1:
 						FLIPPED = True
 						FLIPPER = b
@@ -167,7 +169,7 @@ def main():
 		
 		#############################################################
 		showAllHands()
-		print("")
+		raw_input()
 		calculateRound()
 		round+=1
 		#time.sleep(2)

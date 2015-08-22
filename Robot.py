@@ -69,26 +69,26 @@ class Robot(object):
 				return  True
 		return False
 	def Strategy_1(self):
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < 65:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < 10:
 			return True
 	def Strategy_2(self):
 		if self.lastGame == 0:
 			self.lastGame = 75
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame+30:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) <30:
 			return True
 	def Strategy_3(self):
 		if self.lastGame == 0:
 			self.lastGame = 75
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame+50:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) <20:
 			return True
 	def Strategy_4(self):
 		if self.lastGame == 0:
 			self.lastGame = 75
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame+70:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) <10:
 			return True
 	def Strategy_5(self):
 		if self.lastGame == 0:
 			self.lastGame = 75
-		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame:
+		if Hand.getPowerHand(Hand,sorted(self.hand)) < self.lastGame+30:
 			return True
 			
