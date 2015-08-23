@@ -149,23 +149,29 @@ class UboRound(object):
 			#showAllHands()
 			##############################################################
 			self.dealCards()
+			#print(self.a5.getHand())
 			self.showAllHands()
-			raw_input()
 			##############################################################
-			print("\n#Game Flop".format(self.ROUND))		
+			turn = 1 
+			print("\n#Game Flop".format(self.ROUND))	
+			#### If Player wants to flip right away: ####################	
 			randint(0,100)
-			turn=1
+			for b in self.POOL:
+				if self.flipGame(b) : break
+			if self.FLIPPED: 
+				turn = 0 ## If flipped, we don't go to turn round
+
 			#############################################################
 			##### FLOP COUNT ############################################
 			self.FLIPPED= False
 
 			#############################################################
-			while True:
+			while turn > 0:
 				print("\n#Game Turn {}".format(turn))				
 				turn+=1
 				self.withdrawCards(turn)
+				#print(self.a5.getHand())
 				self.showAllHands()
-				raw_input()
 				for b in self.POOL:
 					if self.flipGame(b) : break
 				if self.FLIPPED: break
@@ -173,7 +179,6 @@ class UboRound(object):
 			
 			#############################################################
 			self.showAllHands()
-			raw_input()
 			self.calculateRound()
 			self.ROUND+=1
 			#time.sleep(2)
